@@ -47,21 +47,25 @@
     <footer>
       <div class="footer-flex">
         <p class="footer-copy">&copy; 2025 Osher Shulman. All rights reserved.</p>
-        <img src="https://firebasestorage.googleapis.com/v0/b/moes-jerky-dd53f.firebasestorage.app/o/chuchum.png?alt=media&token=a6586f4a-0a8e-46a9-bd45-07089c4791ee" alt="footer icon" class="footer-img">
       </div>
+      <img src="https://firebasestorage.googleapis.com/v0/b/moes-jerky-dd53f.firebasestorage.app/o/chuchum.png?alt=media&token=a6586f4a-0a8e-46a9-bd45-07089c4791ee" alt="footer icon" class="footer-img-fixed">
     </footer>
     <script>
-      // Animate sections on scroll
-      function animateSections() {
-        document.querySelectorAll('main section').forEach(section => {
-          const rect = section.getBoundingClientRect();
-          if (rect.top < window.innerHeight - 80) {
-            section.classList.add('animated');
-          }
+      // Animate sections using Intersection Observer for best performance
+      document.addEventListener('DOMContentLoaded', function() {
+        const sections = document.querySelectorAll('main section');
+        const observer = new window.IntersectionObserver((entries, obs) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('animated');
+              obs.unobserve(entry.target); // Only animate once
+            }
+          });
+        }, {
+          threshold: 0.15
         });
-      }
-      window.addEventListener('scroll', animateSections);
-      window.addEventListener('DOMContentLoaded', animateSections);
+        sections.forEach(section => observer.observe(section));
+      });
     </script>
 </body>
 </html>
