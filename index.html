@@ -35,7 +35,7 @@
               <p>Email: <a href="mailto:osher@oshershulman.com">osher@oshershulman.com</a></p>
               <p>Phone: <a href="tel:+18455215797">(845) 521-5797</a></p>
           </div>
-            <form class="contact-form" name="contact" method="POST" data-netlify="true" netlify-honeypot="bot-field" autocomplete="off">
+            <form class="contact-form" name="contact" method="POST" data-netlify="true" netlify-honeypot="bot-field" autocomplete="off" id="contactForm">
   <input type="hidden" name="form-name" value="contact">
   <p style="display:none">
     <label>Don’t fill this out if you’re human: <input name="bot-field"></label>
@@ -48,6 +48,7 @@
   <textarea id="message" name="message" rows="4" required></textarea>
   <button type="submit">Send Message</button>
 </form>
+<div id="thankYouMessage" style="display:none; margin-top:1.5rem; color:#6ee7b7; font-size:1.15rem; text-align:center;">Thank you for your submission!</div>
 
         </section>
     </main>
@@ -72,6 +73,23 @@
           threshold: 0.15
         });
         sections.forEach(section => observer.observe(section));
+
+        // Netlify form thank you message logic
+        const form = document.getElementById('contactForm');
+        const thankYou = document.getElementById('thankYouMessage');
+        if (window.location.hash === '#form-submitted') {
+          if (form) form.style.display = 'none';
+          if (thankYou) thankYou.style.display = 'block';
+        }
+        if (form) {
+          form.addEventListener('submit', function(e) {
+            setTimeout(function() {
+              window.location.hash = 'form-submitted';
+              if (form) form.style.display = 'none';
+              if (thankYou) thankYou.style.display = 'block';
+            }, 100); // Let Netlify process before showing message
+          });
+        }
       });
     </script>
 </body>
