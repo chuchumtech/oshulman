@@ -35,7 +35,7 @@
               <p>Email: <a href="mailto:osher@oshershulman.com">osher@oshershulman.com</a></p>
               <p>Phone: <a href="tel:+18455215797">(845) 521-5797</a></p>
           </div>
-            <form class="contact-form" name="contact" method="POST" data-netlify="true" netlify-honeypot="bot-field" autocomplete="off" id="contactForm">
+            <form class="contact-form" name="contact" netlify-honeypot="bot-field" autocomplete="off" id="contactForm">
   <input type="hidden" name="form-name" value="contact">
   <p style="display:none">
     <label>Don’t fill this out if you’re human: <input name="bot-field"></label>
@@ -74,20 +74,25 @@
         });
         sections.forEach(section => observer.observe(section));
 
-        // Netlify form thank you message logic
+        // Netlify AJAX form submission for in-page thank you message
         const form = document.getElementById('contactForm');
         const thankYou = document.getElementById('thankYouMessage');
-        if (window.location.hash === '#form-submitted') {
-          if (form) form.style.display = 'none';
-          if (thankYou) thankYou.style.display = 'block';
-        }
         if (form) {
           form.addEventListener('submit', function(e) {
-            setTimeout(function() {
-              window.location.hash = 'form-submitted';
-              if (form) form.style.display = 'none';
-              if (thankYou) thankYou.style.display = 'block';
-            }, 100); // Let Netlify process before showing message
+            e.preventDefault();
+            const data = new FormData(form);
+            fetch('/', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+              body: new URLSearchParams(data).toString()
+            })
+            .then(function() {
+              form.style.display = 'none';
+              thankYou.style.display = 'block';
+            })
+            .catch(function() {
+              alert('There was a problem submitting your form. Please try again.');
+            });
           });
         }
       });
