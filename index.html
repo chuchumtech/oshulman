@@ -35,15 +35,19 @@
               <p>Email: <a href="mailto:osher@oshershulman.com">osher@oshershulman.com</a></p>
               <p>Phone: <a href="tel:+18455215797">(845) 521-5797</a></p>
           </div>
-            <form class="contact-form" autocomplete="off" onsubmit="event.preventDefault(); alert('Thank you for reaching out! Osher will contact you soon.'); this.reset();">
-                <label for="name">Name</label>
-                <input type="text" id="name" name="name" required>
-                <label for="email">Email</label>
-                <input type="email" id="email" name="email" required>
-                <label for="message">Message</label>
-                <textarea id="message" name="message" rows="4" required></textarea>
-                <button type="submit">Send Message</button>
-            </form>
+            <form class="contact-form" name="contact" method="POST" data-netlify="true" netlify-honeypot="bot-field" autocomplete="off">
+  <input type="hidden" name="form-name" value="contact">
+  <p style="display:none">
+    <label>Don’t fill this out if you’re human: <input name="bot-field"></label>
+  </p>
+  <label for="name">Name</label>
+  <input type="text" id="name" name="name" required>
+  <label for="email">Email</label>
+  <input type="email" id="email" name="email" required>
+  <label for="message">Message</label>
+  <textarea id="message" name="message" rows="4" required></textarea>
+  <button type="submit">Send Message</button>
+</form>
 
         </section>
     </main>
