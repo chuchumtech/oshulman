@@ -59,22 +59,26 @@ body::before {
     border-radius: 0 12px 12px 0;
 }
 
+.hero-header-flex {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2.2rem;
+    margin-bottom: 0.3rem;
+}
+
 .portrait-img {
-    width: 160px;
-    height: 160px;
-    margin: 0 auto 2rem auto;
+    width: 110px;
+    height: 110px;
     border-radius: 50%;
+    overflow: hidden;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.16), 0 0 0 8px #232946;
+    border: 3px solid #2563eb;
     background: #393e63;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.16), 0 0 0 8px #232946;
-    border: 3px solid #2563eb;
-    overflow: hidden;
-    animation: floatPortrait 4.5s cubic-bezier(.45,1,.55,1) infinite alternate;
-    will-change: transform;
-    backface-visibility: hidden;
-    transform: translateZ(0);
+    margin: 0;
 }
 .portrait-img img {
     width: 100%;
@@ -90,13 +94,41 @@ body::before {
     100% { transform: translateY(-10px) scale(1.03); box-shadow: 0 12px 36px rgba(39,99,235,0.14), 0 0 0 8px #232946; }
 }
 
-h1 {
-    margin: 0.5rem 0 0 0;
-    font-size: 3.1rem;
-    letter-spacing: 0.01em;
-    color: #eaeaea;
+.hero-name-block {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.hero-name-block h1 {
+    margin: 0 0 0.01em 0;
+    font-size: 2.5rem;
     font-weight: 700;
-    font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+    letter-spacing: -1px;
+    color: #eaeaea;
+    line-height: 1.05;
+    padding-bottom: 0.1em;
+}
+.hero-subtitle {
+    margin: 0.01em 0 0.01em 0;
+    font-size: 1.15rem;
+    color: #7fc7ff;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    text-align: center;
+    line-height: 1.1;
+    padding-top: 0.1em;
+}
+
+.hero-subtitle {
+    margin: 0.01em 0 0.01em 0;
+    font-size: 1.15rem;
+    color: #7fc7ff;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    text-align: center;
 }
 
 h2 {
@@ -108,10 +140,20 @@ h2 {
     font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
 }
 
+.tagline {
+    font-size: 1.15rem;
+    color: #b4c5e4;
+    margin: 2.1rem 0 1.2rem 0;
+    font-style: italic;
+    text-align: center;
+    letter-spacing: 0.1px;
+}
+
 .hero-accent {
     width: 80px;
     height: 4px;
-    margin: 1.1rem auto 1.7rem auto;
+    margin: 1.5rem auto 1.7rem auto;
+    padding-top: 0.1em;
     border-radius: 2px;
     background: linear-gradient(90deg, #7fc7ff 0%, #2563eb 100%);
     position: relative;
@@ -126,16 +168,6 @@ h2 {
     0% { opacity: 0.7; transform: scaleX(1); }
     65% { opacity: 1; transform: scaleX(1.13); }
     100% { opacity: 0.85; transform: scaleX(1.05); }
-}
-
-.tagline {
-    font-size: 1.22rem;
-    color: #b4c5e4;
-    margin-bottom: 2.1rem;
-    font-style: italic;
-    font-weight: 400;
-    letter-spacing: 0.04em;
-    line-height: 1.8;
 }
 
 main {
@@ -160,6 +192,8 @@ section {
     line-height: 1.85;
     transition: box-shadow 0.22s cubic-bezier(.45,1,.55,1), transform 0.22s cubic-bezier(.45,1,.55,1), border-color 0.22s cubic-bezier(.45,1,.55,1);
     will-change: opacity, transform;
+    margin-left: auto;
+    margin-right: auto;
     backface-visibility: hidden;
     transform: translateZ(0);
 }
