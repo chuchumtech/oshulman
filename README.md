@@ -13,6 +13,7 @@ Hosted on Vercel.
 | `index.html` | All markup, plus the inline scroll-reveal and contact-form scripts. |
 | `styles.css` | All styling. Colors, fonts, shadows and easing are defined as custom properties in the `:root` block at the top. |
 | `api/contact.js` | Serverless function that validates a contact-form submission and emails it on. |
+| `dev-server.js` | Local dev server, so the contact form can be exercised without the Vercel CLI. Not deployed. |
 | `portrait.webp` | Hero portrait, 330x440 (3x the 110px display size). 20 KB. |
 | `portrait.png` | Same image as a fallback for browsers without WebP support. |
 | `favicon.png` | 96x96 browser icon, pre-cropped to match the hero circle. |
@@ -26,14 +27,27 @@ don't convert them to JPEG, which would flatten those to black.
 ## Viewing locally
 
 Open `index.html` in a browser for everything except the contact form. The form
-needs the serverless function, which means the Vercel CLI:
+posts to a serverless function, so it needs a server. Two ways:
+
+**`dev-server.js`** — no Vercel account or login needed, just Node:
 
 ```sh
-npx vercel dev
+node dev-server.js --mock-email
 ```
 
-Then visit <http://localhost:3000>. Put `RESEND_API_KEY` in a local `.env` file
-(git-ignored) so submissions actually send while developing.
+Then visit <http://localhost:3000>. It serves the static files and routes
+`/api/contact` through the real `api/contact.js`, re-requiring it per request so
+edits are picked up without a restart. `--mock-email` skips the Resend call and
+prints the message that would have been sent, which is useful before an API key
+exists. Drop the flag (and set `RESEND_API_KEY`) to send for real. `--port N`
+changes the port.
+
+**`npx vercel dev`** — the production-accurate option, and worth using before a
+deploy since it runs the same routing and function runtime Vercel does. Requires
+the Vercel CLI and a logged-in account linked to the project.
+
+For either, put `RESEND_API_KEY` in a local `.env` file (git-ignored) so
+submissions actually send while developing.
 
 ## Contact form
 
