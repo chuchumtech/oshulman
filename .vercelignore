@@ -1,0 +1,5 @@
+# Dev- and repo-only files. Anything at the project root that Vercel does not
+# need is otherwise served as a public static file.
+dev-server.js
+.env.example
+README.md
