@@ -169,6 +169,14 @@ textarea:focus-visible {
     color: var(--accent-light);
 }
 
+.hero-credentials {
+    margin: 0.45rem 0 0;
+    font-size: 0.95rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: var(--text-muted);
+}
+
 .hero-accent {
     width: 80px;
     height: 4px;
@@ -369,20 +377,28 @@ main section h2 {
    Footer
    -------------------------------------------------------------------------- */
 
+/* Both lines are centred in a column. The logo used to be positioned
+   absolutely over this area, which collided with the copyright on narrow
+   screens; stacking removes that failure mode at every width.
+
+   The page backdrop reaches its brightest blue behind the footer, where muted
+   text measured 2.4:1 to 3:1 against it. The scrim darkens that corner back to
+   roughly the base navy so the copyright, the credit and the partner logo all
+   read clearly; it fades in from transparent so there is no visible seam. */
 footer {
-    position: relative;
-    min-height: 70px;
-    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.9rem;
+    padding: 3rem 1rem 2.5rem;
     font-size: 1rem;
     color: var(--text-muted);
-}
-
-.footer-flex {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 1.5rem;
-    padding: 1.5rem 0 1rem;
+    background: linear-gradient(
+        to bottom,
+        rgba(26, 26, 46, 0) 0%,
+        rgba(26, 26, 46, 0.72) 45%,
+        rgba(26, 26, 46, 0.93) 100%
+    );
 }
 
 .footer-copy {
@@ -391,19 +407,21 @@ footer {
     letter-spacing: 0.03em;
 }
 
-.footer-img-fixed {
-    position: absolute;
-    right: 3vw;
-    bottom: 0.7rem;
-    width: 160px;
-    max-width: 32vw;
+.footer-credit {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    margin: 0;
+    font-size: 0.88rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+}
+
+.footer-credit img {
+    width: 118px;
     height: auto;
-    opacity: 0.98;
-    filter: drop-shadow(0 4px 14px rgba(39, 99, 235, 0.13))
-            drop-shadow(0 1px 4px rgba(0, 0, 0, 0.12));
-    pointer-events: none;
     user-select: none;
-    z-index: 2;
 }
 
 /* --------------------------------------------------------------------------
@@ -423,29 +441,8 @@ footer {
         padding: 1.1rem 0.4rem;
     }
 
-    /* There is not enough width to float the logo beside the centred copyright
-       on a phone, so stack them instead of overlapping. The previous workaround
-       was to shrink the logo to 38px, which only just avoided a collision. */
-    footer {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .footer-flex {
-        gap: 0.7rem;
-        padding-bottom: 0.25rem;
-    }
-
     .footer-copy {
         font-size: 0.95rem;
-    }
-
-    .footer-img-fixed {
-        position: static;
-        width: 90px;
-        max-width: 44vw;
-        margin: 1.25rem 0 0;
     }
 }
 

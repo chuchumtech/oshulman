@@ -1,0 +1,7 @@
+# Local environment variables — the Resend API key lives here, never in git.
+.env
+.env.*
+!.env.example
+
+# Vercel CLI
+.vercel

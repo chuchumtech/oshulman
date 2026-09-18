@@ -1,50 +1,90 @@
 # Osher Shulman — Therapist Website
 
 A single-page site for Osher Shulman's therapy practice. Plain HTML and CSS with
-a small amount of vanilla JavaScript — no build step, no dependencies.
+a small amount of vanilla JavaScript, plus one serverless function for the
+contact form. No build step and no dependencies.
+
+Hosted on Vercel.
 
 ## Files
 
 | File | Purpose |
 | --- | --- |
 | `index.html` | All markup, plus the inline scroll-reveal and contact-form scripts. |
-| `styles.css` | All styling. Colours, fonts, shadows and easing are defined as custom properties in the `:root` block at the top. |
+| `styles.css` | All styling. Colors, fonts, shadows and easing are defined as custom properties in the `:root` block at the top. |
+| `api/contact.js` | Serverless function that validates a contact-form submission and emails it on. |
 | `portrait.webp` | Hero portrait, 330x440 (3x the 110px display size). 20 KB. |
 | `portrait.png` | Same image as a fallback for browsers without WebP support. |
 | `favicon.png` | 96x96 browser icon, pre-cropped to match the hero circle. |
+| `chuchum-tech.png` | Chuchum Tech logo for the footer credit, 360x134, displayed at 118px wide. |
 
 The portrait keeps the original photo's 3:4 aspect ratio so the
 `object-fit: cover; object-position: center 40%` crop in the stylesheet frames it
-the same way. Both files have a transparent background — don't convert them to
-JPEG, which would flatten it to black.
+the same way. The portrait and the logo both have transparent backgrounds —
+don't convert them to JPEG, which would flatten those to black.
 
 ## Viewing locally
 
-Open `index.html` in a browser, or serve the directory to exercise the contact
-form against a local server:
+Open `index.html` in a browser for everything except the contact form. The form
+needs the serverless function, which means the Vercel CLI:
 
 ```sh
-python3 -m http.server 8000
+npx vercel dev
 ```
 
-Then visit <http://localhost:8000>.
+Then visit <http://localhost:3000>. Put `RESEND_API_KEY` in a local `.env` file
+(git-ignored) so submissions actually send while developing.
 
 ## Contact form
 
-The form posts to [Netlify Forms](https://docs.netlify.com/manage/forms/setup/).
-Submissions are sent over `fetch` so the visitor stays on the page, and the
-result is reported in the `#formStatus` element rather than by a browser alert.
+The form posts JSON to `/api/contact`. That function validates the submission
+and sends it on via [Resend](https://resend.com) using `fetch`, so there is no
+dependency to install and no build step.
 
-- Netlify registers the form at deploy time from the `data-netlify="true"`
-  attribute; the hidden `form-name` input identifies it on submit.
-- `netlify-honeypot="bot-field"` enables the spam trap. The `bot-field` input is
-  hidden by `.honeypot` in the stylesheet — any submission that fills it in is
-  discarded as spam.
-- Submissions appear under **Forms** in the Netlify site dashboard. Email
-  notifications are configured there, not in this repository.
+This replaced Netlify Forms when the site moved to Vercel. Netlify captured
+submissions itself; Vercel has no equivalent built in, so the endpoint and the
+email provider are ours to supply.
 
-Outside of Netlify the form will POST to `/` and report a failure, since nothing
-is listening. The site otherwise works as static files anywhere.
+### Setup
+
+1. Create a Resend account and verify the sending domain (`oshershulman.com`).
+   Until a domain is verified, Resend only delivers to the account's own address.
+2. In the Vercel project, under **Settings → Environment Variables**, add:
+
+   | Variable | Required | Default |
+   | --- | --- | --- |
+   | `RESEND_API_KEY` | yes | — |
+   | `CONTACT_TO` | no | `osher@oshershulman.com` |
+   | `CONTACT_FROM` | no | `Osher Shulman Website <noreply@oshershulman.com>` |
+
+3. Redeploy so the new values are picked up.
+
+`CONTACT_FROM` must be on a domain verified in Resend. The visitor's address
+goes in `reply_to`, not `from`, so replying in a mail client reaches them while
+SPF and DKIM still pass.
+
+Until `RESEND_API_KEY` is set the endpoint returns a 500 and the page tells the
+visitor the form is not configured, rather than silently dropping the message.
+
+### Behaviour
+
+- Failed submissions are reported. The function returns a non-2xx status and the
+  page shows the reason and offers the email address instead — it never thanks a
+  visitor for a message that did not send.
+- `bot-field` is a honeypot, hidden by CSS. Submissions that fill it get a
+  success response and are discarded, so bots don't learn they were filtered.
+- Length limits are enforced in the browser (`maxlength`) and again in the
+  function, which is the one that counts.
+- Newlines are stripped from the subject line, and all values are HTML-escaped
+  in the email body.
+- Without JavaScript the form does a normal POST and the function replies with a
+  small confirmation page instead of raw JSON.
+
+### Swapping email providers
+
+Provider-specific code is one `fetch` call in `api/contact.js`. To move to
+SendGrid, Postmark or SMTP, replace that call and the environment variable it
+reads; the validation, honeypot and response handling stay as they are.
 
 ## Editing
 
@@ -52,11 +92,7 @@ is listening. The site otherwise works as static files anywhere.
 - **The portrait** is served from this repository. To replace it, export the new
   photo at 330x440 (or another 3:4 size) as both `.webp` and `.png`, and a 96x96
   square crop as `favicon.png`.
-- **The footer mark** is the Chuchum Web Design logo, still loaded from Firebase
-  Storage. That bucket currently returns HTTP 402 because its billing account is
-  closed, so the image is broken on the live site — re-host the file (adding it
-  to this repository alongside the portrait is simplest) and update the `src`.
-- **Colours and spacing** come from the custom properties at the top of
+- **Colors and spacing** come from the custom properties at the top of
   `styles.css` — change `--accent` or `--bg-navy` there and the whole palette
   follows.
 - **The phone number** is not currently on the page. To add it back, put it
@@ -72,8 +108,9 @@ Worth preserving if you edit the page:
   whose JavaScript fails.
 - All animation is disabled under `prefers-reduced-motion: reduce`, and sections
   are shown immediately rather than waiting to be scrolled into view.
-- On screens narrower than 600px the footer stacks the logo below the copyright
-  instead of floating it alongside, which is why the logo can be a readable size
-  there rather than the 38px it was shrunk to in order to dodge a collision.
+- The footer has a dark scrim. The page backdrop reaches its brightest blue in
+  that corner, where the muted text measured 2.4:1 to 3:1 against it; the scrim
+  brings that to roughly 9:1. Removing it puts the copyright, the credit line
+  and the logo back below the WCAG AA threshold.
 - The form status message is a live region, so screen readers announce the
   result of a submission.
